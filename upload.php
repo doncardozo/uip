@@ -3,22 +3,23 @@ error_reporting(0);
 
 try {
 
+	# Get data
+	$sdat = json_decode(file_get_contents("/var/www/uip/sdat"));
+
     system("clear");
     
     echo "Begin process.\n";
     
     echo "Get ip...\n";
     
-    system("curl ifconfig.me > /var/www/uip/data", $output);
+    system("curl ifconfig.me > {$sdat->local_dir}/data", $output);
             
     if($output === false)
         throw new Exception("Error: Cannot write file.\n");
         
     echo "Ok.\n";
     
-	$sdat = json_decode(file_get_contents("sdat"));
-
-    echo "Connect to ftp server... ";
+	echo "Connect to ftp server... ";
     
     if ( !($conn_id = ftp_connect($sdat->server)) )
             throw new Exception("Error: cannot connect to ftp server ({$sdat->server}).\n");
@@ -32,7 +33,7 @@ try {
     
     echo "Upload file... ";
     
-    if( !ftp_put($conn_id,'data', 'data', FTP_BINARY ) )
+    if( !ftp_put($conn_id,'data', "{$sdat->local_dir}/data", FTP_BINARY ) )
             throw new Exception("Error: cannot upload file into ftp server ({$sdat->server}).\n");
 
     ftp_close($conn_id);   
