@@ -28,7 +28,7 @@ try {
     
     echo "Ok.\n";
     
-    ftp_chdir($conn_id, 'sf2/web'); 
+    ftp_chdir($conn_id, $sdat->remote_dir);
     
     echo "Upload file... ";
     
